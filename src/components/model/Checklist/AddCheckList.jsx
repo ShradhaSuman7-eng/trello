@@ -7,7 +7,8 @@ import CheckListModel from "./CheckListModel";
 
 const AddCheckList = ({ cardId }) => {
   const [ischeckListOpen, setIsCheckListOpen] = useState(false);
-  const [checkListVal, setCheckListVal] = useState(null);
+  const [checkListVal, setCheckListVal] = useState("");
+
   const { checkLists, setCheckLists } = useContext(BoardContext);
 
   const fetchAllCheckLists = async () => {
