@@ -18,8 +18,8 @@ const CheckListModel = ({ cardId }) => {
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <div className="flex gap-2">
+    <div>
+      <div className="flex flex-wrap gap-2">
         <Button variant="outlined">Members</Button>
         <Button variant="outlined">Labels</Button>
         <Button variant="outlined" onClick={() => setIsCheckListOpen(true)}>
@@ -32,7 +32,7 @@ const CheckListModel = ({ cardId }) => {
       </div>
 
       {isCheckListOpen && (
-        <div className="shadow-2xl px-4 py-3 flex flex-col w-[250px] mt-2 bg-white rounded">
+        <div className="shadow-2xl px-8 py-3 flex flex-col w-[250px] mt-2 bg-white rounded">
           <TextField
             size="small"
             placeholder="Enter Checklist"
@@ -41,18 +41,9 @@ const CheckListModel = ({ cardId }) => {
             autoFocus
           />
 
-          <div className="flex justify-end gap-2 mt-2">
+          <div className="flex justify-center gap-2 mt-2">
+            <Button onClick={handleAddChecklist}>Add</Button>
             <Button
-              variant="contained"
-              size="small"
-              onClick={handleAddChecklist}
-              disabled={loading}
-            >
-              Add
-            </Button>
-            <Button
-              variant="outlined"
-              size="small"
               onClick={() => {
                 setIsCheckListOpen(false);
                 setCheckListVal("");
@@ -64,7 +55,6 @@ const CheckListModel = ({ cardId }) => {
         </div>
       )}
 
-      {/* Pass cardId to ChecklistSection */}
       <ChecklistSection cardId={cardId} />
     </div>
   );

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Button, TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { addCheckItem } from "../../../Redux/checkItems/checkItemThunk";
-
 const CheckItemModel = ({ checklistId, onClose }) => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.checkItems);
@@ -17,16 +16,17 @@ const CheckItemModel = ({ checklistId, onClose }) => {
   };
 
   return (
-    <div className="flex flex-col mt-2 gap-2">
+    <div className="mt-3 bg-white shadow-md rounded-md p-3 w-full">
       <TextField
         size="small"
-        placeholder="Enter item name"
+        fullWidth
+        placeholder="Add an item"
         value={itemName}
         onChange={(e) => setItemName(e.target.value)}
         autoFocus
       />
 
-      <div className="flex gap-2 justify-end">
+      <div className="flex justify-end gap-2 mt-2">
         <Button
           variant="contained"
           size="small"
@@ -35,7 +35,7 @@ const CheckItemModel = ({ checklistId, onClose }) => {
         >
           Add
         </Button>
-        <Button variant="outlined" size="small" onClick={onClose}>
+        <Button variant="text" size="small" onClick={onClose}>
           Cancel
         </Button>
       </div>

@@ -27,36 +27,31 @@ const ChecklistSection = ({ cardId }) => {
   };
 
   return (
-    <div>
-      <h3 className="font-semibold text-lg mb-3">Checklist</h3>
-
-      {/* Render each checklist */}
+    <div className="space-y-4 mt-4">
       {checklists.map((list) => (
-        <div key={list.id} className="bg-white rounded-md p-4 mb-4 shadow">
+        <div key={list.id} className="bg-gray-50 p-4 rounded-md shadow-sm">
           <div className="flex justify-between items-center">
-            <h4 className="font-medium">{list.name}</h4>
+            <h4 className="font-semibold text-base">{list.name}</h4>
             <button
               onClick={() =>
                 dispatch(removeChecklist({ checklistId: list.id, cardId }))
               }
-              className="text-gray-400 hover:text-red-500"
+              className="text-gray-500 hover:text-red-500"
             >
               ✕
             </button>
           </div>
 
-          {/* Render items inside checklist */}
           <CheckItemSection checklistId={list.id} />
         </div>
       ))}
 
-      {/* Add Checklist Input */}
       {!showInput ? (
         <button
           onClick={() => setShowInput(true)}
-          className="text-sm text-gray-600 hover:bg-gray-200 p-2 rounded w-full text-left"
+          className="text-sm text-gray-600 hover:text-black"
         >
-          + Add a checklist
+          + Add an item
         </button>
       ) : (
         <div className="space-y-2 mt-2">
@@ -80,8 +75,9 @@ const ChecklistSection = ({ cardId }) => {
                 setShowInput(false);
                 setTitle("");
               }}
+              className="text-gray-600"
             >
-              ✕
+              Cancel
             </button>
           </div>
         </div>

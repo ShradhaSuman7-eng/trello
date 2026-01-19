@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Card, CardContent, Typography, IconButton } from "@mui/material";
+import { Checkbox } from "antd";
+import { RxCross2 } from "react-icons/rx";
 import {
   fetchCards,
   createCardThunk,
@@ -14,7 +17,7 @@ const Cards = ({ listId }) => {
 
   const [showInput, setShowInput] = useState(false);
   const [cardName, setCardName] = useState("");
-  const [selectedCardId, setSelectedCardId] = useState(null); // <-- selected card
+  const [selectedCardId, setSelectedCardId] = useState(null);
 
   useEffect(() => {
     dispatch(fetchCards(listId));
@@ -33,82 +36,120 @@ const Cards = ({ listId }) => {
   };
 
   return (
-    <div className="space-y-2 relative">
-      {/* Cards */}
+    <div className="space-y-2">
       {cards.map((card) => (
-        <div
+        <Card
           key={card.id}
+          className="group cursor-pointer hover:border-blue-400"
+          sx={{
+            borderRadius: 2,
+            boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+            background: "#fff",
+          }}
           onClick={() => setSelectedCardId(card.id)}
-          className="bg-white rounded-md p-2 shadow hover:bg-gray-50 cursor-pointer group"
         >
-          <div className="flex justify-between items-start">
-            <p className="text-sm text-gray-800">{card.name}</p>
+          <CardContent
+            className="relative flex items-center gap-2"
+            sx={{ padding: "10px 12px" }}
+          >
+            <div className="opacity-0 group-hover:opacity-100">
+              <input
+                type="checkbox"
+                className="w-4 h-4 border border-gray-400 rounded"
+              />
+            </div>
 
-            <button
-              onClick={(e) => handleDelete(e, card.id)}
-              className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500"
+            <Typography
+              variant="body2"
+              fontWeight={500}
+              className="flex-1 text-sm"
             >
-              ✕
-            </button>
-          </div>
-        </div>
+              {card.name}
+            </Typography>
+
+            <IconButton
+              size="small"
+              className="opacity-0 group-hover:opacity-100"
+              onClick={(e) => handleDelete(e, card.id)}
+            >
+              <RxCross2 size={18} />
+            </IconButton>
+          </CardContent>
+        </Card>
       ))}
 
-      {/* Add Card */}
       {!showInput ? (
         <button
           onClick={() => setShowInput(true)}
-          className="w-full text-left text-sm text-gray-600 hover:bg-gray-200 p-2 rounded-md"
+          className="w-full text-left text-sm text-gray-700 hover:bg-gray-200 p-2 rounded-md"
         >
           + Add a card
         </button>
       ) : (
-        <div className="space-y-2">
+        <div className="bg-white rounded-md p-2 shadow space-y-2">
           <textarea
             value={cardName}
             onChange={(e) => setCardName(e.target.value)}
-            placeholder="Enter a title for this card..."
             className="w-full p-2 text-sm border rounded-md"
             rows={3}
             autoFocus
+            placeholder="Enter card title..."
           />
 
-          <div className="flex items-center gap-2">
+          <div className="flex gap-2 items-center">
             <button
+              className="bg-blue-600 text-white px-4 py-1.5 rounded"
               onClick={handleAddCard}
               disabled={loading}
-              className="bg-blue-600 text-white px-4 py-1.5 rounded-md text-sm"
             >
               Add card
             </button>
-
-            <button
-              onClick={() => {
-                setShowInput(false);
-                setCardName("");
-              }}
-              className="text-gray-600 text-lg"
-            >
-              ✕
-            </button>
+            <IconButton onClick={() => setShowInput(false)}>
+              <RxCross2 />
+            </IconButton>
           </div>
         </div>
       )}
 
-      {/* Checklist Modal */}
       {selectedCardId && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-4 w-[600px] max-h-[80vh] overflow-auto relative">
-            <button
-              onClick={() => setSelectedCardId(null)}
-              className="absolute top-2 right-2 text-gray-600 text-lg"
-            >
-              ✕
-            </button>
+        <>
+          <div
+            className="fixed inset-0 bg-black/40 z-40"
+            onClick={() => setSelectedCardId(null)}
+          />
 
-            <CheckListModel cardId={selectedCardId} />
+          <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 w-[720px] max-w-[95%]">
+            <Card sx={{ borderRadius: 3 }}>
+              <CardContent className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <div className="flex items-center gap-3">
+                    <Checkbox />
+                    <Typography variant="h5" fontWeight={600}>
+                      Card Details
+                    </Typography>
+                  </div>
+
+                  <IconButton onClick={() => setSelectedCardId(null)}>
+                    <RxCross2 />
+                  </IconButton>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="md:col-span-2 space-y-6">
+                    <div>
+                      <Typography fontWeight={600}>Description</Typography>
+                      <div className="bg-gray-100 p-3 rounded text-sm text-gray-600">
+                        Add a more detailed description…
+                      </div>
+                    </div>
+
+                    <CheckListModel cardId={selectedCardId} />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

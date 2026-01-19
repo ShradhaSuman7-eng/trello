@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Card, CardContent, Typography, Button, Stack } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
-import { Input } from "antd";
+import { Card, CardContent, Typography, TextField } from "@mui/material";
+import { Button, Input } from "antd";
+import { RxCross2 } from "react-icons/rx";
 import Cards from "../cards/Cards";
 
 import {
@@ -28,94 +27,99 @@ const BoardLists = () => {
 
   const handleCreateList = () => {
     if (!listName.trim()) return;
-
     dispatch(createLists({ listName, boardId }));
     setListName("");
     setShowInput(false);
   };
 
   return (
-    <div className="p-4 overflow-x-auto">
-      <Typography variant="h5" fontWeight={600} mb={2}>
-        Board Lists
-      </Typography>
-
-      <div className="flex gap-4 min-h-[70vh]">
-        {/* Lists */}
-        {lists.map((list) => (
-          <Card
-            key={list.id}
-            className="h-fit"
-            sx={{ width: 280, borderRadius: 3 }}
-          >
-            <CardContent>
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Typography fontWeight={600}>{list.name}</Typography>
-                <Button
-                  size="small"
-                  color="error"
-                  onClick={() => dispatch(deleteListBoard(list.id))}
-                >
-                  ✕
-                </Button>
-              </Stack>
-
-              <Typography variant="body2" color="text.secondary" mt={1}>
-                <Cards listId={list.id} />
-              </Typography>
-            </CardContent>
-          </Card>
-        ))}
-
-        {/* Add List */}
-        <div className="w-[280px]">
-          {!showInput ? (
-            <Button
-              fullWidth
-              variant="outlined"
-              startIcon={<AddIcon />}
-              onClick={() => setShowInput(true)}
-            >
-              Add another list
-            </Button>
-          ) : (
-            <Card>
-              <CardContent>
+    <div className="w-full p-4">
+      {/* Mobile Add List */}
+      <div className="block md:hidden mb-4">
+        <Card sx={{ width: "100%" }}>
+          <CardContent className="flex flex-col gap-4">
+            {showInput ? (
+              <>
                 <Input
-                  placeholder="Enter list title"
+                  placeholder="Enter list name"
                   value={listName}
                   onChange={(e) => setListName(e.target.value)}
-                  autoFocus
                 />
 
-                <Stack direction="row" spacing={1} mt={2}>
-                  <Button
-                    variant="contained"
-                    onClick={handleCreateList}
-                    disabled={!listName.trim() || loading}
-                  >
-                    Add List
+                <div className="flex justify-between">
+                  <Button type="primary" onClick={handleCreateList}>
+                    + Add List
                   </Button>
-                  <Button
-                    startIcon={<CloseIcon />}
-                    onClick={() => {
-                      setShowInput(false);
-                      setListName("");
-                    }}
-                  >
-                    Cancel
+
+                  <Button onClick={() => setShowInput(false)}>
+                    <RxCross2 />
                   </Button>
-                </Stack>
+                </div>
+              </>
+            ) : (
+              <Button type="primary" onClick={() => setShowInput(true)}>
+                + Add Another List
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Lists Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        {Array.isArray(lists) &&
+          lists.map((list) => (
+            <Card key={list.id} className="h-fit bg-gray-100 rounded-lg shadow">
+              <CardContent className="flex flex-col gap-3">
+                <div className="flex justify-between items-center">
+                  <Typography fontWeight={600}>{list.name}</Typography>
+
+                  <Button
+                    type="primary"
+                    onClick={() => dispatch(deleteListBoard(list.id))}
+                  >
+                    <RxCross2 />
+                  </Button>
+                </div>
+
+                {/* Cards */}
+                <div className="flex flex-col gap-2">
+                  <Cards listId={list.id} />
+                </div>
               </CardContent>
             </Card>
-          )}
-        </div>
+          ))}
 
-        <div></div>
+        {/* Desktop Add List */}
+        <div className="hidden md:block">
+          <Card sx={{ width: 260 }}>
+            <CardContent className="flex flex-col gap-4">
+              {showInput ? (
+                <>
+                  <Input
+                    placeholder="Enter list name"
+                    value={listName}
+                    onChange={(e) => setListName(e.target.value)}
+                  />
+
+                  <div className="flex justify-between">
+                    <Button type="primary" onClick={handleCreateList}>
+                      + Add List
+                    </Button>
+
+                    <Button onClick={() => setShowInput(false)}>
+                      <RxCross2 />
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <Button type="primary" onClick={() => setShowInput(true)}>
+                  + Add Another List
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
