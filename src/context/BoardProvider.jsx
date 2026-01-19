@@ -50,8 +50,6 @@ export const BoardProvider = ({ children }) => {
     fetchBoards();
   }, []);
 
-  console.log("stored board", storeBoard);
-
   return (
     <BoardContext.Provider
       value={{
