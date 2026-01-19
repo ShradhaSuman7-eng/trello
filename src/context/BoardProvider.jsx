@@ -15,14 +15,18 @@ export const BoardProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Function to create a board
+  // Create board
   const createBoard = async (name) => {
     try {
       setLoading(true);
       setError(null);
+
       const newBoard = await addBoards(name);
-      setBoards((prev) => [...prev, newBoard]);
-      console.log("Created fron Provider");
+
+      // Ensure newBoard exists before adding
+      if (newBoard) {
+        setBoards((prev) => [...prev, newBoard]);
+      }
     } catch (err) {
       console.error(err);
       setError("Failed to create board");
@@ -31,16 +35,27 @@ export const BoardProvider = ({ children }) => {
     }
   };
 
-  // Function to fetch all Board
+  // Fetch all boards (SAFE)
   const fetchBoards = async () => {
-    setLoading(true);
-    setError(null);
     try {
+      setLoading(true);
+      setError(null);
+
       const data = await getAllBoards();
-      setStoreBoard(data);
-    } catch (error) {
-      console.error(error);
+
+      // GUARANTEE array
+      if (Array.isArray(data)) {
+        setStoreBoard(data);
+      } else if (Array.isArray(data?.boards)) {
+        setStoreBoard(data.boards);
+      } else {
+        console.error("Invalid boards response:", data);
+        setStoreBoard([]);
+      }
+    } catch (err) {
+      console.error(err);
       setError("Failed to fetch boards");
+      setStoreBoard([]);
     } finally {
       setLoading(false);
     }
